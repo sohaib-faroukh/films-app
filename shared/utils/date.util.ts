@@ -36,3 +36,7 @@ export const getCurrentDate = (): Moment => {
 export const momentToDate = ( date: Moment ): Date => {
 	return new Date( date.year(), date.month(), date.date() );
 };
+
+export const isDateValid = ( date: Moment | Date | string | number ): boolean => {
+	return moment( date, DATE_FORMAT ).isValid();
+};

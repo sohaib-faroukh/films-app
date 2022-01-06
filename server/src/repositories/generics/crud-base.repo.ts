@@ -1,4 +1,5 @@
 import { IMap } from 'shared/models/generics/map';
+import { isRegExp } from 'util';
 import { ID } from '../../../../shared/models/generics/id';
 import { DB } from '../../db/db';
 
@@ -9,10 +10,21 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 
 
 	private columnKeysMap: IMap<string> = {};
+	// private reversedColumnKeysMap: IMap<string> = {};
 
 	constructor ( public resourceName: string, columnKeysMap?: { [ key in keyof T ]: string } ) {
 		this.columnKeysMap = columnKeysMap || {};
+		// this.prepareReversedColumnKeysMap();
 	}
+
+	// private prepareReversedColumnKeysMap = () => {
+	// 	this.reversedColumnKeysMap = {};
+	// 	Object.keys( this.columnKeysMap ).forEach( key => {
+	// 		this.reversedColumnKeysMap[ this.columnKeysMap[ key ] ] = key;
+	// 	} );
+
+	// 	console.log( this.reversedColumnKeysMap );
+	// }
 
 	private normalizeQueryOptions = ( options?: QueryOptions ): QueryOptions => {
 		return {
@@ -22,11 +34,21 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 		} as QueryOptions;
 	}
 
+	private entityToObject = ( item: any ): T => {
+		const result: any = {};
+		Object.keys( this.columnKeysMap ).forEach( ( k: string ) => {
+			if ( item[ this.columnKeysMap[ k ] ] ) {
+				result[ k ] = item[ this.columnKeysMap[ k ] ];
+			}
+		} );
+		return ( result as T );
+	}
+
 	public find = async ( options?: QueryOptions ): Promise<T[]> => {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 		const queryString = `select * from ${ this.resourceName } ${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } ;`;
 
-		return ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows || [] as T[];
+		return ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows.map( e => this.entityToObject( e ) ) || [] as T[];
 	}
 
 	public findOne = async ( options?: QueryOptions ): Promise<T> => {

@@ -2,6 +2,7 @@ import * as express from 'express';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as logger from 'morgan';
 import { AccountController } from './controllers/account.controller';
+import { FilmController } from './controllers/film.controller';
 import { Seeder } from './db/seed.db';
 import { getEnvironment } from './environments/env.util';
 import { cors } from './middlewares/cors.middleware';
@@ -24,16 +25,11 @@ const apiRoutes: Router = Router();
 apiRoutes.route( PREFIX + '/auth/sign-up' ).post( AccountController.postAccount );
 apiRoutes.route( PREFIX + '/auth/login' ).post( AccountController.postLoginAccount );
 
+// Films endpoints
+apiRoutes.route( PREFIX + '/films' ).get( FilmController.get ).post( FilmController.post );
+apiRoutes.route( PREFIX + '/films/:id' ).get( FilmController.getById ).delete( FilmController.delete );
 
 
-// Routes needs authorization
-
-// Conversations endpoints
-// apiRoutes.route( PREFIX + '/conversations' ).get( authorize, getConversationByAccount );
-
-
-// Messages endpoints
-// apiRoutes.route( PREFIX + '/messages' ).get( authorize, getMessagesByConversation );
 
 
 
@@ -66,7 +62,7 @@ export const bootstrapTheApp = async () => {
 	expressApp.listen( PORT, async () => {
 		console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
 
-		await Seeder.run();
+		// await Seeder.run();
 	} );
 };
 
