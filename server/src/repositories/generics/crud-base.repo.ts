@@ -1,5 +1,4 @@
 import { IMap } from 'shared/models/generics/map';
-import { isRegExp } from 'util';
 import { ID } from '../../../../shared/models/generics/id';
 import { DB } from '../../db/db';
 
@@ -10,21 +9,10 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 
 
 	private columnKeysMap: IMap<string> = {};
-	// private reversedColumnKeysMap: IMap<string> = {};
 
 	constructor ( public resourceName: string, columnKeysMap?: { [ key in keyof T ]: string } ) {
 		this.columnKeysMap = columnKeysMap || {};
-		// this.prepareReversedColumnKeysMap();
 	}
-
-	// private prepareReversedColumnKeysMap = () => {
-	// 	this.reversedColumnKeysMap = {};
-	// 	Object.keys( this.columnKeysMap ).forEach( key => {
-	// 		this.reversedColumnKeysMap[ this.columnKeysMap[ key ] ] = key;
-	// 	} );
-
-	// 	console.log( this.reversedColumnKeysMap );
-	// }
 
 	private normalizeQueryOptions = ( options?: QueryOptions ): QueryOptions => {
 		return {
@@ -53,14 +41,16 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 
 	public findById = async ( id: ID ): Promise<T> => {
 		const queryString = `select * from ${ this.resourceName } where id = $1 limit 1;`;
-		return ( await DB.getInstance().query( queryString, [ id ] ) ).rows[ 0 ] as T;
+		const entity = ( await DB.getInstance().query( queryString, [ id ] ) ).rows[ 0 ];
+		return this.entityToObject( entity );
 	}
 
 
 	public findOne = async ( options?: QueryOptions ): Promise<T> => {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 		const queryString = `select * from ${ this.resourceName } ${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } limit 1;`;
-		return ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows[ 0 ] as T;
+		const entity = ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows[ 0 ];
+		return this.entityToObject( entity );
 	}
 
 
@@ -90,6 +80,7 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 		return entity;
 	}
 
+
 	public delete = async ( id: IdType ): Promise<T> => {
 		return this.findOne( { whereClause: 'where id=$1', queryValues: [ id ] } ).then( async item => {
 			const queryString = `delete from ${ this.resourceName } where id = $1`;
@@ -100,6 +91,7 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 			throw error;
 		} );
 	}
+
 
 	public deleteAll = async (): Promise<void> => {
 		const queryString = `delete from ${ this.resourceName } where 1 = 1;`;
