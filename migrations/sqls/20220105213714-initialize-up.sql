@@ -52,3 +52,30 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.flm_films
     OWNER to postgres;
+
+
+
+-- Table: public.flm_comments
+
+CREATE TABLE IF NOT EXISTS public.flm_comments
+(
+    id text COLLATE pg_catalog."default" NOT NULL DEFAULT uuid_generate_v1(),
+    content text COLLATE pg_catalog."default" NOT NULL,
+    owner text COLLATE pg_catalog."default" NOT NULL,
+    film text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT cmt_primary_key PRIMARY KEY (id),
+    CONSTRAINT cmt_account_fk FOREIGN KEY (owner)
+        REFERENCES public.flm_accounts (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT cmt_film_fk FOREIGN KEY (film)
+        REFERENCES public.flm_films (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.flm_comments
+    OWNER to postgres;
