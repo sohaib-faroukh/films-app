@@ -51,6 +51,12 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 		return ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows.map( e => this.entityToObject( e ) ) || [] as T[];
 	}
 
+	public findById = async ( id: ID ): Promise<T> => {
+		const queryString = `select * from ${ this.resourceName } where id = $1 limit 1;`;
+		return ( await DB.getInstance().query( queryString, [ id ] ) ).rows[ 0 ] as T;
+	}
+
+
 	public findOne = async ( options?: QueryOptions ): Promise<T> => {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 		const queryString = `select * from ${ this.resourceName } ${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } limit 1;`;
