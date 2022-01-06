@@ -1,7 +1,16 @@
 import { IFilm, IFilmVM } from 'shared/models/film';
+import { ID } from 'shared/models/generics/id';
+import { CommentRepoFactory } from './comment.repo';
 import { CrudBaseRepository } from './generics/crud-base.repo';
 
 class FilmRepo extends CrudBaseRepository<IFilmVM, string> {
+	public findByIdFully = async ( id: ID ): Promise<IFilmVM | null> => {
+		const result = await this.findById( id );
+		if ( result !== null ) {
+			result.comments = ( await CommentRepoFactory.getInstance().findByFilmId( id ) ) || [];
+		}
+		return result;
+	}
 
 }
 

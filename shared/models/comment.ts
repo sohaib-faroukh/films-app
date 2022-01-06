@@ -10,4 +10,7 @@ export interface IComment extends IBaseModel {
 	// account-id of the comment owner
 	owner: ID;
 }
-export interface ICommentVM extends IComment { }
+export interface ICommentVM extends IComment {
+	filmName?: string;
+	ownerName?: string;
+}

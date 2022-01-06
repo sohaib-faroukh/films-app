@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS public.flm_comments
     content text COLLATE pg_catalog."default" NOT NULL,
     owner text COLLATE pg_catalog."default" NOT NULL,
     film text COLLATE pg_catalog."default" NOT NULL,
+    created_at text COLLATE pg_catalog."default" NOT NULL DEFAULT to_char(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH:mm:ss AM TZ'::text),
     CONSTRAINT cmt_primary_key PRIMARY KEY (id),
     CONSTRAINT cmt_account_fk FOREIGN KEY (owner)
         REFERENCES public.flm_accounts (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID,
+        ON DELETE NO ACTION,
     CONSTRAINT cmt_film_fk FOREIGN KEY (film)
         REFERENCES public.flm_films (id) MATCH SIMPLE
         ON UPDATE NO ACTION

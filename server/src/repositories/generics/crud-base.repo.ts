@@ -39,10 +39,10 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 		return ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows.map( e => this.entityToObject( e ) ) || [] as T[];
 	}
 
-	public findById = async ( id: ID ): Promise<T> => {
+	public findById = async ( id: ID ): Promise<T | null> => {
 		const queryString = `select * from ${ this.resourceName } where id = $1 limit 1;`;
-		const entity = ( await DB.getInstance().query( queryString, [ id ] ) ).rows[ 0 ];
-		return this.entityToObject( entity );
+		const entity = ( await DB.getInstance().query( queryString, [ id ] ) ).rows[ 0 ] || null;
+		return entity ? this.entityToObject( entity ) : null;
 	}
 
 

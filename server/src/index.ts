@@ -2,6 +2,7 @@ import * as express from 'express';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as logger from 'morgan';
 import { AccountController } from './controllers/account.controller';
+import { CommentController } from './controllers/comment.controller';
 import { FilmController } from './controllers/film.controller';
 import { Seeder } from './db/seed.db';
 import { getEnvironment } from './environments/env.util';
@@ -26,9 +27,14 @@ apiRoutes.route( PREFIX + '/auth/sign-up' ).post( AccountController.postAccount 
 apiRoutes.route( PREFIX + '/auth/login' ).post( AccountController.postLoginAccount );
 
 // Films endpoints
-apiRoutes.route( PREFIX + '/films' ).get( FilmController.get ).post( FilmController.post );
+apiRoutes.route( PREFIX + '/films/:id/comments' ).get( FilmController.getCommentsByFilmId );
 apiRoutes.route( PREFIX + '/films/:id' ).get( FilmController.getById ).delete( FilmController.delete );
+apiRoutes.route( PREFIX + '/films' ).get( FilmController.get ).post( FilmController.post );
 
+
+// comments endpoints
+apiRoutes.route( PREFIX + '/comments' ).get( CommentController.get ).post( CommentController.post );
+apiRoutes.route( PREFIX + '/comments/:id' ).get( CommentController.getById ).delete( CommentController.delete );
 
 
 
@@ -62,7 +68,7 @@ export const bootstrapTheApp = async () => {
 	expressApp.listen( PORT, async () => {
 		console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
 
-		// await Seeder.run();
+		// await ( new Seeder() ).run();
 	} );
 };
 

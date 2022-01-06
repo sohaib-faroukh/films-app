@@ -1,3 +1,4 @@
+import { ICommentVM } from './comment';
 import { IBaseModel } from './generics/base-model';
 
 export interface IFilm extends IBaseModel {
@@ -12,4 +13,5 @@ export interface IFilm extends IBaseModel {
 }
 
 export interface IFilmVM extends IFilm {
+	comments?: ICommentVM[];
 }
