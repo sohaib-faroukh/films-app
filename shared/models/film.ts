@@ -1,8 +1,6 @@
-import { ID } from './generics/id';
-import { ILogged } from './generics/logged';
+import { IBaseModel } from './generics/base-model';
 
-export interface IFilm extends ILogged {
-	id?: ID;
+export interface IFilm extends IBaseModel {
 	name?: string;
 	description?: string;
 	releaseDate?: string;
