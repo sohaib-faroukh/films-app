@@ -62,7 +62,7 @@
 	<mat-form-field [appearance]="appearance" class="w-100" [floatLabel]="isFloatLabel">
 		<mat-label *ngIf="isWithLabel && label">{{label || placeholder || ''}}</mat-label>
 		<mat-select [formControl]="control!" [multiple]="isMultipleSelect">
-			<mat-option *ngIf="!required">none</mat-option>
+			<mat-option *ngIf="!required && !isMultipleSelect">none</mat-option>
 			<mat-option *ngFor="let option of selectOptions||[]" [value]="option[selectOptionKey] || option['id']"
 				[disabled]="option['disabled']">
 				<span class="text-capitalize">

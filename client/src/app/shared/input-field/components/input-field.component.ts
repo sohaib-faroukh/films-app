@@ -18,6 +18,7 @@ const ErrorMessagesMap: { [ key: string ]: string } = {
 	notMatchedPassword: 'the password is not matched',
 	smallerThanMinDate: 'the date $2 should be larger than $1',
 	largerThanMaxDate: 'the date $2 should be smaller than $1',
+	invalidFileType: 'invalid file, $1',
 };
 @Component( {
 	selector: 'app-input-field',
@@ -54,6 +55,8 @@ export class InputFieldComponent implements OnInit, ControlValueAccessor {
 	@Input() selectOptionKey = '';
 	@Input() selectOptionTitle = '';
 
+	@Input() transformer?: { transform: ( value: any ) => unknown };
+
 	@Output() uploadedFilesChange = new EventEmitter<File[]>();
 
 
@@ -89,12 +92,12 @@ export class InputFieldComponent implements OnInit, ControlValueAccessor {
 	}
 
 
-	set value ( val: any ) {  // this value is updated by programmatic changes
-		if ( val !== undefined && this.val !== val ) {
-			this.val = val;
-			this.control.setValue( val );
-			this.onChange( val );
-			this.onTouch( val );
+	set value ( newValue: any ) {  // this value is updated by programmatic changes
+		if ( newValue !== undefined && this.val !== newValue ) {
+			this.val = newValue;
+			this.onChange( newValue );
+			this.onTouch( newValue );
+			this.control.setValue( newValue );
 
 			this.getErrorMessage();
 		}
@@ -157,8 +160,11 @@ export class InputFieldComponent implements OnInit, ControlValueAccessor {
 	onChange = ( value: any ) => { };
 	onTouch = ( value: any ) => { };
 
-	writeValue ( value: any ): void {
-		this.value = value;
+	writeValue ( newValue: any ): void {
+		if ( this.transformer ) {
+			newValue = this.transformer?.transform( newValue );
+		}
+		this.value = newValue;
 	}
 
 

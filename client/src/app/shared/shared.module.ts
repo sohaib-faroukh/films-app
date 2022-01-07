@@ -8,6 +8,7 @@ import { MaterialModule } from './material.module';
 import { NotAuthorizedModule } from './not-authorized/not-authorized.module';
 import { PipesModule } from './pipes/pipes.module';
 import { SpinnerModule } from './spinner/spinner.module';
+import { RatingStarsModule } from './stars-rating/rating-stars/rating-stars.module';
 
 
 
@@ -21,6 +22,7 @@ import { SpinnerModule } from './spinner/spinner.module';
 		InputFieldModule,
 		SpinnerModule,
 		LoadingButtonModule,
+		RatingStarsModule,
 		NotAuthorizedModule,
 		PipesModule,
 	],
@@ -32,6 +34,7 @@ import { SpinnerModule } from './spinner/spinner.module';
 		InputFieldModule,
 		SpinnerModule,
 		LoadingButtonModule,
+		RatingStarsModule,
 		NotAuthorizedModule,
 		PipesModule,
 	],

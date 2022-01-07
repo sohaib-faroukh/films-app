@@ -1,0 +1,15 @@
+<div class="container-fluid">
+	<div class="row">
+
+		<i *ngIf="rating>=1;else emptyStarRef" class="fa fa-star fa-lg"></i>
+		<i *ngIf="rating>=2;else emptyStarRef" class="fa fa-star fa-lg"></i>
+		<i *ngIf="rating>=3;else emptyStarRef" class="fa fa-star fa-lg"></i>
+		<i *ngIf="rating>=4;else emptyStarRef" class="fa fa-star fa-lg"></i>
+		<i *ngIf="rating>=5;else emptyStarRef" class="fa fa-star fa-lg"></i>
+
+	</div>
+</div>
+
+<ng-template #emptyStarRef>
+	<i class="fa fa-star-o fa-lg"></i>
+</ng-template>

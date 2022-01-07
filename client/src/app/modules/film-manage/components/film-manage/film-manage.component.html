@@ -1,0 +1,104 @@
+<div class="container-fluid" *ngIf="auth.isAdmin">
+
+	<div class="row shadow border m-3">
+		<div class="ml-3">
+			<a [routerLink]="['../']" class="btn btn-outline-primary my-2">
+				<i class="fa fa-angle-left fa-lg"></i>
+			</a>
+		</div>
+	</div>
+
+	<div class="row shadow border m-3">
+		<mat-stepper [linear]="false" #stepper class="w-100">
+			<mat-step [stepControl]="formGroup" class="w-100">
+				<ng-template matStepLabel>Fill out the film values</ng-template>
+				<form [formGroup]="formGroup" class="w-100" (ngSubmit)="onSubmit()">
+					<div class="row my-3">
+
+						<div class="col-md-4">
+							<app-input-field [placeholder]="'Set a film name'" [isWithLabel]="true" [label]="'Name'" [type]="'text'"
+								[formControl]="control('name')">
+							</app-input-field>
+						</div>
+
+						<div class="col-md-4">
+							<app-input-field [placeholder]="'Select the film Country'" [isWithLabel]="true" [label]="'Country'"
+								[type]="'select'" [selectOptions]="filmsService.countries" [selectOptionKey]="'code'"
+								[selectOptionTitle]="'name'" [formControl]="control('country')">
+							</app-input-field>
+						</div>
+
+
+						<div class="col-md-4">
+							<app-input-field [placeholder]="'Select the film genres'" [isWithLabel]="true" [label]="'Genres'"
+								[type]="'select'" [selectOptions]="filmsService.genres" [isMultipleSelect]="true"
+								[selectOptionKey]="'id'" [selectOptionTitle]="'name'" [formControl]="control('genre')">
+							</app-input-field>
+						</div>
+
+
+						<div class="col-md-4">
+							<app-input-field [placeholder]="'Select the film rating'" [isWithLabel]="true" [label]="'Rating'"
+								[type]="'select'" [selectOptions]="ratings" [selectOptionKey]="'id'" [formControl]="control('rating')">
+							</app-input-field>
+						</div>
+
+						<div class="col-md-4">
+							<app-input-field [placeholder]="'Select the film ticket price'" [isWithLabel]="true"
+								[label]="'Ticket Price'" [type]="'number'" [formControl]="control('ticketPrice')">
+							</app-input-field>
+						</div>
+
+
+						<div class="col-md-4">
+							<app-input-field [placeholder]="'Select the film release date'" [isWithLabel]="true"
+								[label]="'Release Date'" [type]="'time'" [formControl]="control('releaseDate')">
+							</app-input-field>
+						</div>
+
+						<div class="col-md-12">
+							<app-input-field [placeholder]="'Set a description for the film...'" [isWithLabel]="true"
+								[label]="'Description '" [type]="'textarea'" [formControl]="control('description')">
+							</app-input-field>
+						</div>
+
+						<div class="col-md-4">
+							<button *ngIf="!formGroup.disabled" [appLoadingButton]="loading===3" type="submit"
+								class="btn btn-outline-primary" [disabled]="formGroup.invalid">Submit</button>
+						</div>
+
+					</div>
+
+					<div>
+						<button type="button" class="btn btn-outline-primary" matStepperNext> Next</button>
+					</div>
+				</form>
+			</mat-step>
+
+			<mat-step [stepControl]="imageFormControl" class="w-100">
+				<ng-template matStepLabel> Upload image for the film</ng-template>
+				<div class="row">
+					<div class="col-md-6">
+						<app-input-field [type]="'file'" (uploadedFilesChange)="onFileUploadChange($event)"
+							[isWithErrorMessage]="true" [formControl]="imageFormControl">
+						</app-input-field>
+
+					</div>
+					<div class="col-md-6 d-flex">
+						<div class="m-auto">
+							<button type="button" class="btn btn-outline-primary" (click)="onUploadImage()"> Upload</button>
+						</div>
+					</div>
+
+				</div>
+			</mat-step>
+		</mat-stepper>
+	</div>
+</div>
+
+
+
+
+<pre>
+	{{formGroup.value|json}}
+</pre>
