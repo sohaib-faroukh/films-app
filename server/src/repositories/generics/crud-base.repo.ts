@@ -99,4 +99,9 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 	}
 
 
+	public query = async ( text: string, values?: any[] ): Promise<unknown> => {
+		return await DB.getInstance().query( text, values );
+	}
+
+
 }
