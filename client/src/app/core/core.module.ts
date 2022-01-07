@@ -6,6 +6,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { HttpInterceptorProviders } from './interceptors';
 import { AlertService } from './services/alert.service';
 import { AuthService } from './services/auth.service';
+import { CommentsService } from './services/comments.service';
+import { FilmsService } from './services/films.service';
 import { ModalService } from './services/modal.service';
 import { RoutingService } from './services/routing.service';
 import { SystemService } from './services/system.service';
@@ -26,6 +28,8 @@ import { UsersService } from './services/users.service';
 		AuthService,
 		ModalService,
 		UsersService,
+		FilmsService,
+		CommentsService,
 	],
 } )
 /**
