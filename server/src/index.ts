@@ -28,6 +28,7 @@ apiRoutes.route( PREFIX + '/auth/login' ).post( AccountController.postLoginAccou
 
 // Films endpoints
 apiRoutes.route( PREFIX + '/films/:id/comments' ).get( FilmController.getCommentsByFilmId );
+apiRoutes.route( PREFIX + '/films/:film/upload-image' ).post( FilmController.uploadFilmImage );
 apiRoutes.route( PREFIX + '/films/:id' ).get( FilmController.getById ).delete( FilmController.delete );
 apiRoutes.route( PREFIX + '/films' ).get( FilmController.get ).post( FilmController.post );
 

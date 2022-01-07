@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { body, param } from 'express-validator';
+import { resolve } from 'path';
 import { ICommentVM } from 'shared/models/comment';
 import { IFilm, IFilmVM } from 'shared/models/film';
 import { ID } from 'shared/models/generics/id';
@@ -9,7 +10,7 @@ import { requestResponder } from '../middlewares/request-responder.middleware';
 import { requestValidator } from '../middlewares/request-validator.middleware';
 import { CommentRepoFactory } from '../repositories/comment.repo';
 import { FilmRepoFactory } from '../repositories/film.repo';
-
+import { fileUploader, FileUploaderFieldName } from '../utils/file-uploader.util';
 
 
 
@@ -29,6 +30,10 @@ export class FilmController {
 		} ),
 	];
 
+
+	/**
+	 * get film by id with its details (e.g. comments ) api
+	 */
 	public static getById: RequestHandler[] = [
 		param( 'id' ).exists().bail().isString(),
 		requestValidator,
@@ -67,7 +72,9 @@ export class FilmController {
 		} ),
 	];
 
-
+	/**
+	 * delete a film by its ID api
+	 */
 	public static delete: RequestHandler[] = [
 		param( 'id' ).exists().bail().isString(),
 		requestValidator,
@@ -81,6 +88,9 @@ export class FilmController {
 		} ),
 	];
 
+	/**
+	 * get all comments related to a film by its ID api
+	 */
 	public static getCommentsByFilmId: RequestHandler[] = [
 		param( 'id' ).exists().bail().isString(),
 		requestValidator,
@@ -92,6 +102,34 @@ export class FilmController {
 			return result;
 
 		} ),
+	];
+
+	/**
+	 * upload image for the film
+	 */
+	public static uploadFilmImage: RequestHandler[] = [
+		fileUploader.single( FileUploaderFieldName ),
+		param( 'film' ).exists().bail().isString(),
+		requestResponder( async ( req: Request, res: Response, next: NextFunction ) => {
+
+			if ( !req.file ) throw new Error( 'error - no file is provided' );
+			const myFile = req.file;
+
+			const { film } = req.params;
+			if ( !film ) throw new Error( 'error - film id is not provided' );
+
+			if ( !FilmController.isFileImage( myFile?.mimetype ) ) throw new Error( 'error - uploaded file is not an image type file' );
+
+			const path = resolve( myFile?.path ) || '';
+			await FilmRepoFactory.getInstance().query( `update "public"."flm_films" set photo = $1 where id = $2`, [ path, film ] ).catch( error => {
+				console.error( error );
+				throw new Error( `error - an issue happened while setting the film image, film id: ${ film }` );
+			} );
+
+			const result = FilmRepoFactory.getInstance().findById( film );
+			return result;
+		} ),
+
 	];
 
 
@@ -106,6 +144,14 @@ export class FilmController {
 			} ) );
 
 	}
+
+
+	private static isFileImage = ( mimeType: string ): boolean => {
+		return ( mimeType.split( '/' )[ 0 ] === 'image' );
+
+	}
+
+
 
 
 }

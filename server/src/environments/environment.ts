@@ -4,6 +4,7 @@ dotenv.config();
 export const environment = {
 	production: false,
 	PORT: process.env.PORT || 3005,
+	storageBucket: 'uploaded-files',
 	ANGULAR_DIST_FILES: {
 		path: 'dist/films-app',
 		rootFile: 'index.html',
