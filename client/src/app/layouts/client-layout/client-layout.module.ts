@@ -12,6 +12,7 @@ const routes: Routes = [
 			{ path: ROUTES_MAP.empty, pathMatch: 'full', redirectTo: ROUTES_MAP.films },
 			{ path: ROUTES_MAP.films, loadChildren: () => import( '../../modules/films-list/films-list.module' ).then( m => m.FilmsListModule ) },
 			{ path: ROUTES_MAP.films + '/create', pathMatch: 'full', canLoad: [ AuthGuard ], loadChildren: () => import( '../../modules/film-manage/film-manage.module' ).then( m => m.FilmManageModule ) },
+			{ path: ROUTES_MAP.films + '/:slug', pathMatch: 'full', canLoad: [ AuthGuard ], loadChildren: () => import( '../../modules/film-view/film-view.module' ).then( m => m.FilmViewModule ) },
 		],
 	},
 ];
