@@ -1,1 +1,54 @@
-<p>film-view works!</p>
+<style>
+	.film-img-size-lg {
+		height: 30rem;
+		width: 20rem;
+		max-width: 100%;
+	}
+
+	.film-img-filter {
+		filter: drop-shadow(0px 0px 9px black) opacity(0.92);
+		border-radius: 5px;
+	}
+</style>
+<div class="container">
+
+	<div class="row shadow border m-3">
+		<div class="ml-3">
+			<a [routerLink]="['../']" class="btn btn-outline-primary my-2">
+				<i class="fa fa-angle-left fa-lg"></i>
+			</a>
+		</div>
+	</div>
+
+
+	<div class="row shadow border m-3 p-3">
+		<ng-container *ngIf="film$|async as film;else filmNotFound">
+			<div class="col-md-4">
+				<img [src]="film.photo??'' |fileLocator|sanitizeUrl" [alt]="film.name??''"
+					class="film-img-size-lg film-img-filter" height="480" width="320">
+			</div>
+
+
+			<div class="col-md-8 mt-4 mt-md-0">
+				<h5 class="text-capitalize text-shadow mb-4">{{film?.name??''}}</h5>
+
+				<div class="mt-4">
+					<app-rating-five-stars *ngIf="film.rating" class="text-warning" [rating]="film.rating">
+					</app-rating-five-stars>
+				</div>
+
+				<div class="mt-4">
+					<p>{{film?.description??''}}</p>
+				</div>
+			</div>
+
+		</ng-container>
+	</div>
+</div>
+
+
+<ng-template #filmNotFound>
+	<div class="row">
+		<span class="text-center">Film is not found</span>
+	</div>
+</ng-template>
