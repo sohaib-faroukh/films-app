@@ -12,7 +12,7 @@ export class CommentsService extends BaseCrudService<ICommentVM, HttpSearchOptio
 
 	constructor ( public http: HttpClient ) {
 		super( http );
-		this.apiUrl = 'comments';
+		this.apiUrl = '/comments';
 		this.fetch().toPromise();
 	}
 

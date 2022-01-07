@@ -15,7 +15,7 @@ export class FilmsService extends BaseCrudService<IFilmVM, HttpSearchOptions>{
 
 	constructor ( public http: HttpClient ) {
 		super( http );
-		this.apiUrl = 'films';
+		this.apiUrl = '/films';
 		this.fetch().toPromise();
 	}
 

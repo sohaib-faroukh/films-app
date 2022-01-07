@@ -1,0 +1,70 @@
+<style>
+	.film-img-size {
+		width: 100%;
+		height: 270px;
+	}
+
+	.film-img-filter {
+		filter: drop-shadow(2px 1px 5px black);
+	}
+</style>
+<div class="container-fluid">
+
+	<div class="row shadow border m-3" *ngIf="auth.isAdmin">
+		<div class="ml-auto">
+			<button type="button" class="btn btn-primary my-2 mr-3">
+				<i class="fa fa-plus fa-lg"></i>
+				Add Film
+			</button>
+		</div>
+	</div>
+
+	<div class="row justify-content-center">
+
+
+
+		<ng-container *ngIf=" filmsService.data$|async as films;else loadingRef">
+			<ng-container *ngIf="films.length>0;else noFilmsMsgRef">
+				<ng-container *ngFor="let film of films">
+
+
+
+					<div class="col-11 col-md-4 col-lg-3 my-2">
+						<div class="card shadow border pt-0 pb-2 px-0">
+							<ng-container *ngIf="film?.photo;else wildcardImage">
+								<img class="card-img-top film-img-size film-img-filter"
+									[src]="(film?.photo||'')|fileLocator|sanitizeUrl" [alt]="film?.name||'no image'" height="270">
+							</ng-container>
+							<div class="card-body">
+								<h5 class="card-title text-capitalize">{{film?.name??''}}</h5>
+								<p class="card-text">
+									{{film?.description??''}}
+								</p>
+								<a [routerLink]="['/',routesMap.films,film.id]" class="btn btn-primary">Details</a>
+							</div>
+						</div>
+					</div>
+
+				</ng-container>
+			</ng-container>
+		</ng-container>
+
+	</div>
+</div>
+
+
+<ng-template #loadingRef>
+	<div class="row">
+		<app-spinner class="m-auto"></app-spinner>
+	</div>
+</ng-template>
+<ng-template #noFilmsMsgRef>
+	<div class="row alert alert-warn">
+		<span class="m-auto text-center">There is no films...</span>
+	</div>
+</ng-template>
+
+<ng-template #wildcardImage>
+	<img class="card-img-top film-img" [src]="'assets/images/film-strip.jpg'" height="270"
+		style="filter: blur(2px) opacity(.7);">
+</ng-template>

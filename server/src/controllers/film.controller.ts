@@ -120,7 +120,7 @@ export class FilmController {
 
 			if ( !FilmController.isFileImage( myFile?.mimetype ) ) throw new Error( 'error - uploaded file is not an image type file' );
 
-			const path = resolve( myFile?.path ) || '';
+			const path = myFile?.path || '';
 			await FilmRepoFactory.getInstance().query( `update "public"."flm_films" set photo = $1 where id = $2`, [ path, film ] ).catch( error => {
 				console.error( error );
 				throw new Error( `error - an issue happened while setting the film image, film id: ${ film }` );

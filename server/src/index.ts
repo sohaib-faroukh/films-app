@@ -13,6 +13,7 @@ import { requestResponder } from './middlewares/request-responder.middleware';
 
 const env = process.argv?.includes( '--production' ) ? getEnvironment( 'prod' ) : getEnvironment();
 const ANGULAR_DIST_FILES = env?.ANGULAR_DIST_FILES;
+const StoragePath = env?.storageBucket;
 const PORT = env.PORT || 3005;
 const PREFIX = '/v1/api';
 
@@ -49,9 +50,11 @@ apiRoutes.route( '/*' ).get( ( req: Request, res: Response ) =>
 
 
 
+
 // Bootstrapping the application
 const expressApp = express();
 
+expressApp.use( `/${ StoragePath }`, express.static( StoragePath ) );
 expressApp.use( express.static( ANGULAR_DIST_FILES.path ) );
 expressApp.use( express.json() );
 expressApp.use( express.urlencoded( { limit: '200mb', extended: true } ) );

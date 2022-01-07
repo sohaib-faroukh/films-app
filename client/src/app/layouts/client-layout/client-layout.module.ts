@@ -9,7 +9,7 @@ const routes: Routes = [
 	{
 		path: ROUTES_MAP.empty, component: ClientLayoutComponent, children: [
 			{ path: ROUTES_MAP.empty, pathMatch: 'full', redirectTo: ROUTES_MAP.films },
-			// { path: ROUTES_MAP.films, loadChildren: () => import( './modules/login/login.module' ).then( m => m.LoginModule )	},
+			{ path: ROUTES_MAP.films, loadChildren: () => import( '../../modules/films-list/films-list.module' ).then( m => m.FilmsListModule ) },
 
 		],
 	},

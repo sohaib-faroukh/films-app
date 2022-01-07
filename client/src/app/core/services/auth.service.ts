@@ -36,6 +36,9 @@ export class AuthService extends BaseCrudService<IAccountVM, HttpSearchOptions> 
 		return this.isLoggedIn$.getValue() || false;
 	}
 
+	get isAdmin (): boolean {
+		return this.loggedInAccount$.getValue()?.email === environment.ADMIN_EMAIL;
+	}
 
 	public isAuth = (): boolean => {
 		let result: IAccountVM | undefined;

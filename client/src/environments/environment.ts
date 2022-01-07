@@ -2,12 +2,16 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+const apiHost = 'http://localhost:3005';
+
 export const environment = {
 	production: false,
 	FileUploaderFieldName: 'file',
 	ACCOUNT_STORAGE_KEY: 'films_acc_token',
-	apiBaseUrl: 'http://localhost:3005/v1/api',
+	apiHost,
+	apiBaseUrl: `${ apiHost }/v1/api`,
 	storagePrefix: 'films_app_dev',
+	ADMIN_EMAIL: 'admin@email.com',
 };
 
 /*
