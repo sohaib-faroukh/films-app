@@ -43,7 +43,7 @@ export class CommentManageComponent implements OnInit {
 
 			const payload: ICommentVM = {
 				film: this.film,
-				owner: this.owner,
+				// owner: this.owner,
 				content: this.commentFormControl.value,
 			} as ICommentVM;
 

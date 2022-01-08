@@ -6,9 +6,8 @@ import { uuid } from '../../../shared/utils/uuid.util';
 import { requestResponder } from '../middlewares/request-responder.middleware';
 import { requestValidator } from '../middlewares/request-validator.middleware';
 import { AccountRepoFactory } from '../repositories/account.repo';
-import { getToken } from '../utils/auth.util';
 import { compare, encode } from '../utils/bcrypt.util';
-import { generateAuthToken, verifyAuthToken } from '../utils/jwt.util';
+import { generateAuthToken } from '../utils/jwt.util';
 
 
 /**
@@ -73,23 +72,6 @@ export class AccountController {
 
 	];
 
-
-
-
-	/**
-	 * retrieve the logged in account by token
-	 * @param token user token
-	 * @returns account of the passed token
-	 */
-	public static getLoggedInAccount = async ( token: string | undefined ): Promise<IAccount | null> => {
-		if ( !token ) return null;
-		token = getToken( token );
-		const account = verifyAuthToken( token );
-		if ( account ) {
-			return await AccountRepoFactory.getInstance().findByEmail( account.email || '' );
-		}
-		else return null;
-	}
 
 	private static secure = ( input: any ): any => {
 		const result: any = { ...input };

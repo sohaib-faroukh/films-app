@@ -9,6 +9,7 @@ import { Seeder } from './db/seed.db';
 import { getEnvironment } from './environments/env.util';
 import { cors } from './middlewares/cors.middleware';
 import { requestResponder } from './middlewares/request-responder.middleware';
+import { authorize, authorizeByRoles } from './utils/auth.util';
 
 
 
@@ -32,14 +33,14 @@ apiRoutes.route( PREFIX + '/auth/login' ).post( AccountController.postLoginAccou
 
 // Films endpoints
 apiRoutes.route( PREFIX + '/films/:id/comments' ).get( FilmController.getCommentsByFilmId );
-apiRoutes.route( PREFIX + '/films/:film/upload-image' ).post( FilmController.uploadFilmImage );
-apiRoutes.route( PREFIX + '/films/:id' ).get( FilmController.getById ).delete( FilmController.delete );
-apiRoutes.route( PREFIX + '/films' ).get( FilmController.get ).post( FilmController.post );
+apiRoutes.route( PREFIX + '/films/:film/upload-image' ).post( authorizeByRoles( [ 'admin' ] ), FilmController.uploadFilmImage );
+apiRoutes.route( PREFIX + '/films/:id' ).get( FilmController.getById ).delete( authorizeByRoles( [ 'admin' ] ), FilmController.delete );
+apiRoutes.route( PREFIX + '/films' ).get( FilmController.get ).post( authorizeByRoles( [ 'admin' ] ), FilmController.post );
 
 
 // comments endpoints
-apiRoutes.route( PREFIX + '/comments' ).get( CommentController.get ).post( CommentController.post );
-apiRoutes.route( PREFIX + '/comments/:id' ).get( CommentController.getById ).delete( CommentController.delete );
+apiRoutes.route( PREFIX + '/comments' ).get( CommentController.get ).post( authorize, CommentController.post );
+apiRoutes.route( PREFIX + '/comments/:id' ).get( CommentController.getById ).delete( authorizeByRoles( [ 'admin' ] ), CommentController.delete );
 
 
 

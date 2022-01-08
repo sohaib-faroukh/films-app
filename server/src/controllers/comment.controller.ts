@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { body, param } from 'express-validator';
 import { IComment, ICommentVM } from 'shared/models/comment';
 import { ID } from 'shared/models/generics/id';
-import { getCurrent, isDateValid } from '../../../shared/utils/date.util';
+import { getCurrent } from '../../../shared/utils/date.util';
 import { uuid } from '../../../shared/utils/uuid.util';
 import { requestResponder } from '../middlewares/request-responder.middleware';
 import { requestValidator } from '../middlewares/request-validator.middleware';
@@ -50,7 +50,7 @@ export class CommentController {
 	public static post: RequestHandler[] = [
 		body( 'content' ).exists().bail().isString(),
 		body( 'film' ).exists().bail().isString(),
-		body( 'owner' ).exists().bail().isString(),
+		// body( 'owner' ).exists().bail().isString(),
 		requestValidator,
 		requestResponder( async ( req: Request, res: Response, next: NextFunction ) => {
 
@@ -63,6 +63,11 @@ export class CommentController {
 			}
 
 			const current = getCurrent();
+
+			const account = ( await AccountRepoFactory.getInstance().getLoggedInAccount( req?.headers?.authorization ) );
+			if ( !account ) throw new Error( 'error - logged in account is not found' );
+
+			payload.owner = account.id ?? '';
 			payload.createdAt = current;
 			payload.id = uuid();
 			const newEntity: IComment = payload as IComment;
