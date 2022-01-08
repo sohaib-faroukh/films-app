@@ -4,6 +4,7 @@ import * as logger from 'morgan';
 import { AccountController } from './controllers/account.controller';
 import { CommentController } from './controllers/comment.controller';
 import { FilmController } from './controllers/film.controller';
+import { DB } from './db/db';
 import { Seeder } from './db/seed.db';
 import { getEnvironment } from './environments/env.util';
 import { cors } from './middlewares/cors.middleware';
@@ -69,11 +70,12 @@ expressApp.use( '', requestResponder( ( req: Request, res: Response, next: NextF
 
 
 export const bootstrapTheApp = async () => {
-	expressApp.listen( PORT, async () => {
-		console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
 
-		// await ( new Seeder() ).run();
-	} );
+	await DB.initialize().then( () =>
+		expressApp.listen( PORT, async () => {
+			console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
+			// await ( new Seeder() ).run();
+		} ) );
 };
 
 
