@@ -9,3 +9,4 @@
 **/compose*
 **/Dockerfile*
 **/node_modules
+pgdata
