@@ -16,6 +16,7 @@ export const environment = {
 		user: 'postgres',
 		password: 'postgres',
 	},
+	SeedDb: process.env.SEED_DB === 'true',
 	auth: {
 		secret: process.env.JWT_SECRET,
 		jwtTokenLifeTime: '100',

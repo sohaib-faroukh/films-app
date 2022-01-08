@@ -13,10 +13,12 @@ import { requestResponder } from './middlewares/request-responder.middleware';
 
 
 const env = process.argv?.includes( '--production' ) ? getEnvironment( 'prod' ) : getEnvironment();
+
 const ANGULAR_DIST_FILES = env?.ANGULAR_DIST_FILES;
 const StoragePath = env?.storageBucket;
 const PORT = env.PORT || 3005;
 const PREFIX = '/v1/api';
+const isSeedDatabase = env.SeedDb;
 
 
 const apiRoutes: Router = Router();
@@ -74,7 +76,9 @@ export const bootstrapTheApp = async () => {
 	await DB.initialize().then( () =>
 		expressApp.listen( PORT, async () => {
 			console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
-			// await ( new Seeder() ).run();
+			if ( isSeedDatabase === true ) {
+				await ( new Seeder() ).run();
+			}
 		} ) );
 };
 

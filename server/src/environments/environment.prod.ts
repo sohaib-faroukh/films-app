@@ -10,12 +10,13 @@ export const environment = {
 		rootFile: 'index.html',
 	},
 	postgres: {
-		host: '127.0.0.1',
+		host: 'postgres-db',
 		port: 5432,
 		database: 'films-app-prod',
 		user: 'postgres',
 		password: 'postgres',
 	},
+	SeedDb: process.env.SEED_DB === 'true',
 	auth: {
 		secret: process.env.JWT_SECRET,
 		jwtTokenLifeTime: '100',
