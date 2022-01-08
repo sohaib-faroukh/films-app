@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ICountry } from 'client/src/app/core/models/country';
+import { IGenre } from 'client/src/app/core/models/genre';
 import { AuthService } from 'client/src/app/core/services/auth.service';
 import { CommentsService } from 'client/src/app/core/services/comments.service';
 import { FilmsService } from 'client/src/app/core/services/films.service';
@@ -9,6 +11,7 @@ import { ICommentVM } from 'shared/models/comment';
 import { IFilmVM } from 'shared/models/film';
 import { ID } from 'shared/models/generics/id';
 
+type IFilmVMExtended = IFilmVM & { genresObjects?: IGenre[], countryObject?: ICountry };
 @Component( {
 	selector: 'app-film-view',
 	templateUrl: './film-view.component.html',
@@ -16,8 +19,9 @@ import { ID } from 'shared/models/generics/id';
 } )
 export class FilmViewComponent implements OnInit {
 
-	public film$: Observable<IFilmVM | undefined>;
+	public film$: Observable<IFilmVMExtended | undefined>;
 	public comments$: BehaviorSubject<ICommentVM[]>;
+
 	constructor (
 		public auth: AuthService,
 		public router: Router,
@@ -36,7 +40,14 @@ export class FilmViewComponent implements OnInit {
 					this.filmsService.data$.pipe( map( films => films.find( f => f.id === filmSlug ) ) ),
 					this.filmsService.getCommentsByFilmId( filmSlug ),
 				] ).pipe(
-					map( ( [ film, comments ] ) => ( { ...film, comments } as IFilmVM ) ),
+					map(
+						( [ film, comments ] ) => ( {
+							...film,
+							comments,
+							countryObject: this.filmsService.countries.find( c => c.code === film?.country ),
+							genresObjects: ( film?.genre || [] ).map( g1 => this.filmsService.genres.find( g2 => g2.id === g1 ) ).filter( Boolean ) || [],
+						} as IFilmVMExtended )
+					),
 					tap( film => this.comments$?.next( film?.comments || [] ) )
 				)
 			)

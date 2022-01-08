@@ -92,11 +92,11 @@ export class Seeder {
 				id: uuid(),
 				name: `film ${ i }`,
 				description: `film ${ i } description, and it should be a long string`,
-				country: `country-${ i }`,
+				country: `SY`,
 				photo: '',
 				ticketPrice: i * 100.5,
 				rating: i % 6,
-				genre: [ `${ i % 5 }`, `${ ( i + 1 ) % 5 }` ],
+				genre: [ 'comedy', 'drama', 'fantasy' ],
 				releaseDate: current,
 				createdAt: current,
 			} as IFilm;

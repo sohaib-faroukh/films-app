@@ -38,8 +38,21 @@
 					<h5 class="text-capitalize text-shadow mb-4">{{film?.name??''}}</h5>
 
 					<div class="mt-4">
+						<p *ngIf="film.countryObject">Country: {{film?.countryObject?.name??''}}</p>
+					</div>
+
+					<div class="mt-4">
 						<app-rating-five-stars *ngIf="film.rating" class="text-warning" [rating]="film.rating">
 						</app-rating-five-stars>
+					</div>
+
+					<div class="mt-4">
+						<ul class="list-unstyled">
+							<li class="list-inline-item badge badge-info p-2 rounded-pill shadow border"
+								*ngFor="let genre of film?.genresObjects||[]">
+								{{genre?.name??''}}
+							</li>
+						</ul>
 					</div>
 
 					<div class="mt-4">
