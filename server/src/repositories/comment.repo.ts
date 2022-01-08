@@ -10,7 +10,7 @@ class CommentRepo extends CrudBaseRepository<ICommentVM, string> {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 
 		const queryText = `
-			select *, acc.name as "ownerName", flm.name as "filmName" from ${ this.resourceName } cmt
+			select cmt.*, acc.name as "ownerName", flm.name as "filmName" from ${ this.resourceName } cmt
 			left join ${ AccountRepoFactory.resourceName } acc on acc.id = cmt.owner
 			left join ${ FilmRepoFactory.resourceName } flm on flm.id = cmt.film
 			${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } ;
