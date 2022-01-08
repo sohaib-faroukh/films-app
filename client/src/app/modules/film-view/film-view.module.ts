@@ -4,6 +4,7 @@ import { FilmViewComponent } from './components/film-view/film-view.component';
 import { ROUTES_MAP } from '../../routes.map';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
+import { CommentsListModule } from '../comments-list/comments-list.module';
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
 		CommonModule,
 		RouterModule.forChild( routes ),
 		SharedModule,
+		CommentsListModule,
 	],
 } )
 export class FilmViewModule { }

@@ -22,33 +22,42 @@
 
 
 	<div class="row shadow border m-3 p-3">
-		<ng-container *ngIf="film$|async as film;else filmNotFound">
-			<div class="col-md-4">
-				<img [src]="film.photo??'' |fileLocator|sanitizeUrl" [alt]="film.name??''"
-					class="film-img-size-lg film-img-filter" height="480" width="320">
-			</div>
-
-
-			<div class="col-md-8 mt-4 mt-md-0">
-				<h5 class="text-capitalize text-shadow mb-4">{{film?.name??''}}</h5>
-
-				<div class="mt-4">
-					<app-rating-five-stars *ngIf="film.rating" class="text-warning" [rating]="film.rating">
-					</app-rating-five-stars>
+		<ng-container *ngIf="film$|async as film;else loadingRef">
+			<ng-container *ngIf="!!film;else filmNotFound">
+				<div class="col-md-4">
+					<img [src]="film.photo??'' |fileLocator|sanitizeUrl" [alt]="film.name??''"
+						class="film-img-size-lg film-img-filter" height="480" width="320">
 				</div>
 
-				<div class="mt-4">
-					<p>{{film?.description??''}}</p>
-				</div>
-			</div>
 
+				<div class="col-md-8 mt-4 mt-md-0">
+					<h5 class="text-capitalize text-shadow mb-4">{{film?.name??''}}</h5>
+
+					<div class="mt-4">
+						<app-rating-five-stars *ngIf="film.rating" class="text-warning" [rating]="film.rating">
+						</app-rating-five-stars>
+					</div>
+
+					<div class="mt-4">
+						<p>{{film?.description??''}}</p>
+					</div>
+					<div class="my-4">
+						<app-comments-list [comments]="film?.comments??[]"></app-comments-list>
+					</div>
+				</div>
+
+			</ng-container>
 		</ng-container>
 	</div>
 </div>
 
 
+<ng-template #loadingRef>
+	<app-spinner class="m-auto"></app-spinner>
+</ng-template>
+
 <ng-template #filmNotFound>
-	<div class="row">
+	<div class="row w-100">
 		<span class="text-center">Film is not found</span>
 	</div>
 </ng-template>

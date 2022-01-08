@@ -1,13 +1,14 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { body, param } from 'express-validator';
-import { resolve } from 'path';
-import { ICommentVM } from 'shared/models/comment';
-import { IFilm, IFilmVM } from 'shared/models/film';
-import { ID } from 'shared/models/generics/id';
+import { ICommentVM } from '../../../shared/models/comment';
+import { IFilm, IFilmVM } from '../../../shared/models/film';
+import { ID } from '../../../shared/models/generics/id';
+import { arrayToMap } from '../../../shared/utils/map.util';
 import { getCurrent, isDateValid } from '../../../shared/utils/date.util';
 import { uuid } from '../../../shared/utils/uuid.util';
 import { requestResponder } from '../middlewares/request-responder.middleware';
 import { requestValidator } from '../middlewares/request-validator.middleware';
+import { AccountRepoFactory } from '../repositories/account.repo';
 import { CommentRepoFactory } from '../repositories/comment.repo';
 import { FilmRepoFactory } from '../repositories/film.repo';
 import { fileUploader, FileUploaderFieldName } from '../utils/file-uploader.util';
@@ -98,7 +99,18 @@ export class FilmController {
 
 			const { id } = req?.params;
 			if ( !id ) throw new Error( 'film id is not provided with the request' );
-			const result: ICommentVM[] = await CommentRepoFactory.getInstance().findByFilmId( id ) || [];
+
+			const film = await FilmRepoFactory.getInstance().findById( id );
+			if ( !film ) throw new Error( 'error - film is not found' );
+
+			const accounts = arrayToMap( ( await AccountRepoFactory.getInstance().find() ) ?? [] ) ?? {};
+
+			const result: ICommentVM[] = ( await CommentRepoFactory.getInstance().findByFilmId( id ) ?? [] )
+				.map( comment => ( {
+					...comment,
+					ownerName: accounts[ comment.owner ]?.name ?? '',
+					filmName: film?.name ?? '',
+				} as ICommentVM ) );
 			return result;
 
 		} ),

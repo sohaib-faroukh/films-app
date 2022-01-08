@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilmsService } from 'client/src/app/core/services/films.service';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { IFilmVM } from 'shared/models/film';
 import { ID } from 'shared/models/generics/id';
@@ -24,9 +24,11 @@ export class FilmViewComponent implements OnInit {
 			filter( value => value.keys.includes( 'slug' ) ),
 			map( value => value.get( 'slug' ) as ID ),
 			switchMap( ( filmSlug: ID ) =>
-				this.filmsService.data$.pipe(
-					map( films => films.find( f => f.id === filmSlug ) )
-				) )
+				combineLatest( [
+					this.filmsService.data$.pipe( map( films => films.find( f => f.id === filmSlug ) ) ),
+					this.filmsService.getCommentsByFilmId( filmSlug ),
+				] ).pipe( map( ( [ film, comments ] ) => ( { ...film, comments } as IFilmVM ) ) )
+			)
 		);
 	}
 
