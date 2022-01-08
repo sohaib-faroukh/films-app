@@ -8,13 +8,13 @@ export type QueryOptions = { whereClause?: string, sortByClause?: string, queryV
 export abstract class CrudBaseRepository<T, IdType extends ID> {
 
 
-	private columnKeysMap: IMap<string> = {};
+	private objectColumnKeys: [ keyof T, string ][] = [];
 
-	constructor ( public resourceName: string, columnKeysMap?: { [ key in keyof T ]: string } ) {
-		this.columnKeysMap = columnKeysMap || {};
+	constructor ( public resourceName: string, objectColumnKeys?: [ keyof T, string ][] ) {
+		this.objectColumnKeys = objectColumnKeys || [];
 	}
 
-	private normalizeQueryOptions = ( options?: QueryOptions ): QueryOptions => {
+	public normalizeQueryOptions = ( options?: QueryOptions ): QueryOptions => {
 		return {
 			queryValues: [ ...( options || {} )?.queryValues || [] ],
 			sortByClause: ( options || {} )?.sortByClause || '',
@@ -22,13 +22,20 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 		} as QueryOptions;
 	}
 
-	private entityToObject = ( item: any ): T => {
+	public entityToObject = ( item: any ): T => {
 		const result: any = {};
-		Object.keys( this.columnKeysMap ).forEach( ( k: string ) => {
-			if ( item[ this.columnKeysMap[ k ] ] ) {
-				result[ k ] = item[ this.columnKeysMap[ k ] ];
+		for ( const key in item ) {
+			if ( item[ key ] ) {
+				const index = this.objectColumnKeys.findIndex( e => e[ 1 ] === key );
+				if ( index >= 0 ) {
+					const objectKey = this.objectColumnKeys[ index ][ 0 ];
+					result[ objectKey ] = item[ key ];
+				}
+				else {
+					result[ key ] = item[ key ];
+				}
 			}
-		} );
+		}
 		return ( result as T );
 	}
 
@@ -61,8 +68,8 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 
 
 		for ( const key in entity ) {
-			if ( entity[ key ] && this.columnKeysMap[ key ] ) {
-				columns.push( this.columnKeysMap[ key ] );
+			if ( entity[ key ] && this.objectColumnKeys.some( e => e[ 0 ] === key ) ) {
+				columns.push( ( this.objectColumnKeys.find( e => e[ 0 ] === key ) || [] )[ 1 ] );
 				values.push( entity[ key ] as any );
 			}
 		}
@@ -99,7 +106,7 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 	}
 
 
-	public query = async ( text: string, values?: any[] ): Promise<unknown> => {
+	public query = async ( text: string, values?: any[] ) => {
 		return await DB.getInstance().query( text, values );
 	}
 

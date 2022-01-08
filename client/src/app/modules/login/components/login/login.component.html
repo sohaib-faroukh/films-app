@@ -27,8 +27,10 @@
 					<button [appLoadingButton]="status===4" [disabled]="!form?.valid" class="mb-1 btn btn-secondary"
 						type="submit">Login</button>
 				</div>
-				<div class="row pb-2 justify-content-center">
+				<div class="pb-2 text-center">
 					<a [routerLink]="['/'+routerMap.signUp]" class="pointer text-sm">Create new account ?</a>
+					<br>
+					<a [routerLink]="['/']" class="pointer text-sm">Complete as guest...</a>
 				</div>
 			</div>
 		</div>

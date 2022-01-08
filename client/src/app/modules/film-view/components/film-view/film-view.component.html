@@ -17,6 +17,7 @@
 			<a [routerLink]="['../']" class="btn btn-outline-primary my-2">
 				<i class="fa fa-angle-left fa-lg"></i>
 			</a>
+			<span class="ml-3 text-gray-600">Back to films list</span>
 		</div>
 	</div>
 
@@ -25,8 +26,11 @@
 		<ng-container *ngIf="film$|async as film;else loadingRef">
 			<ng-container *ngIf="!!film;else filmNotFound">
 				<div class="col-md-4">
-					<img [src]="film.photo??'' |fileLocator|sanitizeUrl" [alt]="film.name??''"
-						class="film-img-size-lg film-img-filter" height="480" width="320">
+					<ng-container *ngIf="film?.photo;else wildcardImage">
+						<img [src]="film.photo??'' |fileLocator|sanitizeUrl" [alt]="film.name??''"
+							class="film-img-size-lg film-img-filter" height="480" width="320">
+					</ng-container>
+
 				</div>
 
 
@@ -42,7 +46,10 @@
 						<p>{{film?.description??''}}</p>
 					</div>
 					<div class="my-4">
-						<app-comments-list [comments]="film?.comments??[]"></app-comments-list>
+						<app-comments-list [comments]="(comments$|async)??[]"></app-comments-list>
+						<app-comment-manage *ngIf="film.id && (auth.isLoggedIn$|async)==true" [film]="film.id"
+							(commentSubmitted)="onCommentAdded($event)">
+						</app-comment-manage>
 					</div>
 				</div>
 
@@ -60,4 +67,10 @@
 	<div class="row w-100">
 		<span class="text-center">Film is not found</span>
 	</div>
+</ng-template>
+
+
+<ng-template #wildcardImage>
+	<img class="film-img-size-lg" [src]="'assets/images/film-strip.jpg'" height="480" width="320"
+		style="filter: blur(2px) opacity(.7);">
 </ng-template>

@@ -25,7 +25,7 @@ export class CommentController {
 	 */
 	public static get: RequestHandler[] = [
 		requestResponder( async ( req: Request, res: Response, next: NextFunction ) => {
-			const result = ( await CommentRepoFactory.getInstance().find() ) || [];
+			const result = ( await CommentRepoFactory.getInstance().findFully() ) || [];
 			return result;
 		} ),
 	];

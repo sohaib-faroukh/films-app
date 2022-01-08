@@ -1,0 +1,16 @@
+<ng-container *ngIf="isShow;else loginMessageRef">
+	<form class="row" (ngSubmit)="onCommentSubmit()">
+		<app-input-field class="col-10" [type]="'text'" [isWithErrorMessage]="false" [label]="'Comment text'"
+			[placeholder]="'Type your comment...'" [formControl]="commentFormControl">
+		</app-input-field>
+
+		<button type="submit" [disabled]="commentFormControl.invalid" [appLoadingButton]="loading===3"
+			class="btn h-100 ml-2 mt-0 mt-3 p-1 text-primary">
+			<i class="fa fa-send-o fa-2x on-hover"></i>
+		</button>
+	</form>
+</ng-container>
+
+<ng-template #loginMessageRef>
+	<span class="text-center">login and you can comment</span>
+</ng-template>

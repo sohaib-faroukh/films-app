@@ -84,7 +84,7 @@ export class AuthService extends BaseCrudService<IAccountVM, HttpSearchOptions> 
 		this.deleteFromStorage();
 		this.isLoggedIn$.next( false );
 		this.loggedInAccount$.next( undefined );
-		this.router.navigate( [ '/' + ROUTES_MAP.login ] );
+		// this.router.navigate( [ '/' + ROUTES_MAP.login ] );
 	}
 
 	private saveToStorage = ( value: IAccountVM ) => {

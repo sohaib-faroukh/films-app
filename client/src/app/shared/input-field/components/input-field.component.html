@@ -1,7 +1,7 @@
 <!-- *  text, number, email, password -->
 
 <ng-container *ngIf="['text','number','email', 'password'].includes(type)">
-	<div class="mb-2">
+	<div class="mb-2 w-100">
 		<mat-form-field [appearance]="appearance" class="w-100" [floatLabel]="isFloatLabel">
 			<mat-label *ngIf="isWithLabel && label">{{label || placeholder || ''}}</mat-label>
 			<input matInput [type]="type" [formControl]="control!" [name]="name || 'normal-field'"

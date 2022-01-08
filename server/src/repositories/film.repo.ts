@@ -16,22 +16,23 @@ class FilmRepo extends CrudBaseRepository<IFilmVM, string> {
 
 export class FilmRepoFactory {
 	static instance: FilmRepo;
+	static readonly resourceName = '"public"."flm_films"';
 
 	static getInstance = (): FilmRepo => {
 		if ( !FilmRepoFactory.instance ) {
-			const objectColumnsMap: { [ k in keyof IFilm ]: string } = {
-				id: 'id',
-				name: 'name',
-				createdAt: 'created_at',
-				country: 'country',
-				description: 'description',
-				genre: 'genre',
-				photo: 'photo',
-				rating: 'rating',
-				releaseDate: 'release_date',
-				ticketPrice: 'ticket_price',
-			};
-			FilmRepoFactory.instance = new FilmRepo( '"public"."flm_films"', objectColumnsMap );
+			const objectColumnsMap: [ keyof IFilm, string ][] = [
+				[ 'id', 'id' ],
+				[ 'name', 'name' ],
+				[ 'createdAt', 'created_at' ],
+				[ 'country', 'country' ],
+				[ 'description', 'description' ],
+				[ 'genre', 'genre' ],
+				[ 'photo', 'photo' ],
+				[ 'rating', 'rating' ],
+				[ 'releaseDate', 'release_date' ],
+				[ 'ticketPrice', 'ticket_price' ],
+			];
+			FilmRepoFactory.instance = new FilmRepo( FilmRepoFactory.resourceName, objectColumnsMap );
 		}
 		return FilmRepoFactory.instance;
 	}

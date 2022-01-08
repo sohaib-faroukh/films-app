@@ -17,19 +17,21 @@ class AccountRepo extends CrudBaseRepository<IAccountVM, string> {
 
 export class AccountRepoFactory {
 	static instance: AccountRepo;
+	static readonly resourceName = '"public"."flm_accounts"';
 
 	static getInstance = (): AccountRepo => {
 		if ( !AccountRepoFactory.instance ) {
-			const objectColumnsMap: { [ k in keyof IAccount ]: string } = {
-				id: 'id',
-				name: 'name',
-				createdAt: 'created_at',
-				password: 'password',
-				email: 'email', token: 'token',
-				type: 'type',
-				status: 'status',
-			};
-			AccountRepoFactory.instance = new AccountRepo( '"public"."flm_accounts"', objectColumnsMap );
+			const objectColumnsMap: [ keyof IAccount, string ][] = [
+				[ 'id', 'id' ],
+				[ 'name', 'name' ],
+				[ 'createdAt', 'created_at' ],
+				[ 'password', 'password' ],
+				[ 'email', 'email' ],
+				[ 'token', 'token' ],
+				[ 'type', 'type' ],
+				[ 'status', 'status' ],
+			];
+			AccountRepoFactory.instance = new AccountRepo( AccountRepoFactory.resourceName, objectColumnsMap );
 		}
 		return AccountRepoFactory.instance;
 	}
