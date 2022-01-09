@@ -81,6 +81,7 @@ export const bootstrapTheApp = async () => {
 				await ( new Seeder() ).run();
 			}
 		} ) );
+	return expressApp;
 };
 
 
