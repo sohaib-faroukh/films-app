@@ -22,27 +22,35 @@ export class Seeder {
 	private films: IFilm[] = [];
 	private comments: IComment[] = [];
 
+	constructor ( public isSeedDatabase: boolean ) { }
 
 	public run = async () => {
-		console.log( `\n***** SEEDING DATABASE\n` );
 
-		await CommentRepoFactory.getInstance().deleteAll();
-		await FilmRepoFactory.getInstance().deleteAll();
-		await AccountRepoFactory.getInstance().deleteAll();
+		if ( this.isSeedDatabase ) {
+			console.log( `\n***** SEEDING DATABASE\n` );
+			await CommentRepoFactory.getInstance().deleteAll();
+			await FilmRepoFactory.getInstance().deleteAll();
+			await AccountRepoFactory.getInstance().deleteAll();
+		}
 
+		await this.seedAdminAccount();
 
-		await this.seedAccounts();
-		await this.seedFilms();
-		await this.seedComments();
-		console.log( `\n***** END SEEDING\n` );
+		if ( this.isSeedDatabase ) {
+			await this.seedAccounts();
+			await this.seedFilms();
+			await this.seedComments();
+			console.log( `\n***** END SEEDING\n` );
+		}
+
 	}
 
-	public seedAdminAccount = async () => {
+	private seedAdminAccount = async () => {
 		console.log( '***** check the admin account' );
-
 		try {
-			const acc = await AccountRepoFactory.getInstance().findByEmail( Seeder.ADMIN_EMAIL );
-			if ( !acc ) throw new Error( 'not found' );
+			const foundAdminAccount = await AccountRepoFactory.getInstance().findByEmail( Seeder.ADMIN_EMAIL );
+			if ( !foundAdminAccount ) throw new Error( 'not found' );
+			this.accounts.push( foundAdminAccount );
+			return;
 		} catch ( error ) {
 			console.log( '***** seed an admin account started' );
 			// seed admin
@@ -57,8 +65,8 @@ export class Seeder {
 				createdAt: current,
 			} as IAccount;
 			adminAccount.token = generateAuthToken( adminAccount );
-			this.accounts.push( adminAccount );
 			await AccountRepoFactory.getInstance().add( adminAccount );
+			this.accounts.push( adminAccount );
 
 			console.log( '***** seed an admin is done' );
 

@@ -77,12 +77,9 @@ export const bootstrapTheApp = async () => {
 		expressApp.listen( PORT, async () => {
 			console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
 
-			const seeder = new Seeder();
-			await seeder.seedAdminAccount();
+			const seeder = new Seeder( isSeedDatabase );
+			await seeder.run();
 
-			if ( isSeedDatabase === true ) {
-				await seeder.run();
-			}
 
 		} ) );
 	return expressApp;
