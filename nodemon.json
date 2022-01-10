@@ -8,6 +8,7 @@
 	],
 	"ignore": [
 		".git",
+		"server/test/**",
 		"node_modules/**"
 	],
 	"exec": "npm run server"
