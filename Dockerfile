@@ -20,6 +20,7 @@ COPY database.docker.json ./database.json
 ENV PORT=8080
 ENV JWT_SECRET='app-secret-token'
 ENV SEED_DB='true'
+ENV PROD_PG_STING='postgresql://<user>:<password>@postgres-db:5432/<db_name>'
 
 EXPOSE 8080
 
