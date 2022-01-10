@@ -12,7 +12,6 @@ import { requestResponder } from './middlewares/request-responder.middleware';
 import { authorize, authorizeByRoles } from './utils/auth.util';
 
 
-
 const env = process.argv?.includes( '--production' ) ? getEnvironment( 'prod' ) : getEnvironment();
 
 const ANGULAR_DIST_FILES = env?.ANGULAR_DIST_FILES;
@@ -77,9 +76,14 @@ export const bootstrapTheApp = async () => {
 	await DB.initialize().then( () =>
 		expressApp.listen( PORT, async () => {
 			console.log( `\n***** THE APP IS RUNNING ON PORT #${ PORT } *****\n` );
+
+			const seeder = new Seeder();
+			await seeder.seedAdminAccount();
+
 			if ( isSeedDatabase === true ) {
-				await ( new Seeder() ).run();
+				await seeder.run();
 			}
+
 		} ) );
 	return expressApp;
 };

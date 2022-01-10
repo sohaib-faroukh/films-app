@@ -1,5 +1,5 @@
-import { IComment } from 'shared/models/comment';
-import { IFilm } from 'shared/models/film';
+import { IComment } from '../../../shared/models/comment';
+import { IFilm } from '../../../shared/models/film';
 import { IAccount } from '../../../shared/models/account';
 import { getCurrent } from '../../../shared/utils/date.util';
 import { uuid } from '../../../shared/utils/uuid.util';
@@ -22,6 +22,7 @@ export class Seeder {
 	private films: IFilm[] = [];
 	private comments: IComment[] = [];
 
+
 	public run = async () => {
 		console.log( `\n***** SEEDING DATABASE\n` );
 
@@ -36,30 +37,40 @@ export class Seeder {
 		console.log( `\n***** END SEEDING\n` );
 	}
 
+	public seedAdminAccount = async () => {
+		console.log( '***** check the admin account' );
+
+		try {
+			const acc = await AccountRepoFactory.getInstance().findByEmail( Seeder.ADMIN_EMAIL );
+			if ( !acc ) throw new Error( 'not found' );
+		} catch ( error ) {
+			console.log( '***** seed an admin account started' );
+			// seed admin
+			const current = getCurrent();
+			const adminAccount = {
+				id: uuid(),
+				email: Seeder.ADMIN_EMAIL,
+				name: `Admin`,
+				password: encode( Seeder.ADMIN_PASSWORD ),
+				type: 'admin',
+				status: 'active',
+				createdAt: current,
+			} as IAccount;
+			adminAccount.token = generateAuthToken( adminAccount );
+			this.accounts.push( adminAccount );
+			await AccountRepoFactory.getInstance().add( adminAccount );
+
+			console.log( '***** seed an admin is done' );
+
+		}
+		finally {
+			console.log( '***** admin account checked' );
+		}
+	}
+
 	private seedAccounts = async () => {
 		console.log( `\n***** SEEDING account is started\n` );
-
 		const current = getCurrent();
-
-
-		// seed admin
-		const adminAccount = {
-			id: uuid(),
-			email: Seeder.ADMIN_EMAIL,
-			name: `Admin`,
-			password: encode( Seeder.ADMIN_PASSWORD ),
-			type: 'admin',
-			status: 'active',
-			createdAt: current,
-		} as IAccount;
-		adminAccount.token = generateAuthToken( adminAccount );
-
-		this.accounts.push( adminAccount );
-		await AccountRepoFactory.getInstance().add( adminAccount );
-
-		// seed normal users
-
-
 		for ( let i = 1; i <= Seeder.ACCOUNTS_SIZE; i++ ) {
 			const account = {
 				id: uuid(),

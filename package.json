@@ -19,7 +19,8 @@
 		"e2e": "ng e2e",
 		"build": "npm-run-all ng-build build-server",
 		"build-run": "run-s build start",
-		"migrate": "npx db-migrate up initialize",
+		"migrate": "npx db-migrate up initialize -e dev",
+		"migrate:prod": "npx db-migrate up initialize -e prod",
 		"undo-migrate": "npx db-migrate down",
 		"heroku-postbuild": "npm run build"
 	},

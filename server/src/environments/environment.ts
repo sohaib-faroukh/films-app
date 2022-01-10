@@ -1,21 +1,14 @@
-import * as  dotenv from 'dotenv';
-dotenv.config();
+import { DatabaseConfigs } from './env.reader';
 
 export const environment = {
 	production: false,
-	PORT: process.env.PORT || 3005,
+	PORT: process.env.PORT || 8080,
 	storageBucket: 'uploaded-files',
 	ANGULAR_DIST_FILES: {
 		path: 'dist/films-app',
 		rootFile: 'index.html',
 	},
-	postgres: {
-		host: '127.0.0.1',
-		port: 5432,
-		database: 'films-app-dev',
-		user: 'postgres',
-		password: 'postgres',
-	},
+	postgres: { ...DatabaseConfigs },
 	SeedDb: process.env.SEED_DB === 'true',
 	auth: {
 		secret: process.env.JWT_SECRET,

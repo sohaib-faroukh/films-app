@@ -53,11 +53,11 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 	}
 
 
-	public findOne = async ( options?: QueryOptions ): Promise<T> => {
+	public findOne = async ( options?: QueryOptions ): Promise<T | null> => {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 		const queryString = `select * from ${ this.resourceName } ${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } limit 1;`;
 		const entity = ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows[ 0 ];
-		return this.entityToObject( entity );
+		return entity ? this.entityToObject( entity ) : null;
 	}
 
 
@@ -93,11 +93,13 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 	}
 
 
-	public delete = async ( id: IdType ): Promise<T> => {
+	public delete = async ( id: IdType ): Promise<T | null> => {
 		return this.findOne( { whereClause: 'where id=$1', queryValues: [ id ] } ).then( async item => {
-			const queryString = `delete from ${ this.resourceName } where id = $1`;
-			await DB.getInstance().query( queryString, [ id ] );
-			return item;
+			if ( item ) {
+				const queryString = `delete from ${ this.resourceName } where id = $1`;
+				await DB.getInstance().query( queryString, [ id ] );
+				return item as any as T;
+			} else return null;
 		} ).catch( error => {
 			console.error( 'DB ERROR - DELETE ERROR ID: ', this.resourceName, ' - ', id, ' ERROR: ', error );
 			throw error;

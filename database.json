@@ -1,9 +1,30 @@
 {
+	"defaultEnv": {
+		"ENV": "NODE_ENV"
+	},
 	"dev": {
 		"driver": "pg",
 		"user": "postgres",
 		"password": "postgres",
 		"host": "localhost",
 		"database": "films-app-dev"
+	},
+	"prod": {
+		"driver": "pg",
+		"port": {
+			"ENV": "PROD_PG_PORT"
+		},
+		"host": {
+			"ENV": "PROD_PG_HOST"
+		},
+		"user": {
+			"ENV": "PROD_PG_USERNAME"
+		},
+		"password": {
+			"ENV": "PROD_PG_PASSWORD"
+		},
+		"database": {
+			"ENV": "PROD_PG_DATABASE"
+		}
 	}
 }

@@ -10,7 +10,7 @@ export class DB {
 	private static instance: DbPool;
 
 	public static setup = ( settings?: PoolConfig ) => {
-		const db: DbPool = new Pool( settings ?? { ...getEnvironment().postgres, application_name: 'films-app' } );
+		const db: DbPool = new Pool( settings as PoolConfig ?? { ...getEnvironment().postgres, application_name: 'films-app' } as PoolConfig );
 		DB.instance = db;
 	}
 
