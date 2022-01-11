@@ -18,7 +18,7 @@ export class CommentManageComponent implements OnInit {
 	public loading = 0;
 	@Output() commentSubmitted = new EventEmitter<ICommentVM>();
 
-	public commentFormControl: FormControl = new FormControl( '', [ Validators.required, Validators.pattern( /^.\S.*/ ), Validators.minLength( 2 ), Validators.maxLength( 500 ) ] );
+	public commentFormControl: FormControl = new FormControl( '', [ Validators.required, Validators.minLength( 2 ), Validators.maxLength( 500 ) ] );
 	constructor (
 		public commentsService: CommentsService,
 		public auth: AuthService,

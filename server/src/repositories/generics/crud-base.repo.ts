@@ -43,56 +43,63 @@ export abstract class CrudBaseRepository<T, IdType extends ID> {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 		const queryString = `select * from ${ this.resourceName } ${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } ;`;
 
-		return ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows.map( e => this.entityToObject( e ) ) || [] as T[];
+		return ( ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows || [] ).map( e => this.entityToObject( e ) ) || [] as T[];
 	}
 
 	public findById = async ( id: ID ): Promise<T | null> => {
 		const queryString = `select * from ${ this.resourceName } where id = $1 limit 1;`;
-		const entity = ( await DB.getInstance().query( queryString, [ id ] ) ).rows[ 0 ] || null;
+		const entity = ( ( await DB.getInstance().query( queryString, [ id ] ) ).rows || [] )[ 0 ] || null;
 		return entity ? this.entityToObject( entity ) : null;
 	}
 
 
-	public findOne = async ( options?: QueryOptions ): Promise<T> => {
+	public findOne = async ( options?: QueryOptions ): Promise<T | null> => {
 		const normalizedOptions = this.normalizeQueryOptions( options );
 		const queryString = `select * from ${ this.resourceName } ${ normalizedOptions.whereClause } ${ normalizedOptions.sortByClause } limit 1;`;
 		const entity = ( await DB.getInstance().query( queryString, normalizedOptions.queryValues || [] ) ).rows[ 0 ];
-		return this.entityToObject( entity );
+		return entity ? this.entityToObject( entity ) : null;
 	}
 
 
 	public add = async ( entity: T ): Promise<T> => {
+		try {
 
-		const columns: any[] = [];
-		const values: string[] = [];
+			const columns: any[] = [];
+			const values: any[] = [];
 
 
-		for ( const key in entity ) {
-			if ( entity[ key ] && this.objectColumnKeys.some( e => e[ 0 ] === key ) ) {
-				columns.push( ( this.objectColumnKeys.find( e => e[ 0 ] === key ) || [] )[ 1 ] );
-				values.push( entity[ key ] as any );
+			for ( const key in entity ) {
+				if ( entity[ key ] !== undefined && this.objectColumnKeys.some( e => e[ 0 ] === key ) ) {
+					columns.push( ( this.objectColumnKeys.find( e => e[ 0 ] === key ) || [] )[ 1 ] );
+					values.push( entity[ key ] );
+				}
 			}
-		}
 
-		const queryIndicatorOfValues = values.map( ( _, ix ) => `$${ ix + 1 }` );
+			const queryIndicatorOfValues = values.map( ( _, ix ) => `$${ ix + 1 }` );
 
-		const queryString = `
+			const queryString = `
 		INSERT INTO ${ this.resourceName }
 					( ${ columns.join( ', ' ) }  )
 		VALUES 	( ${ queryIndicatorOfValues.join( ', ' ) }  );
 			`;
 
-		await DB.getInstance().query( queryString, values );
+			await DB.getInstance().query( queryString, values );
 
+		} catch ( error ) {
+			console.error( '***** DB ERROR: ', error );
+			throw new Error( 'error: database error' );
+		}
 		return entity;
 	}
 
 
-	public delete = async ( id: IdType ): Promise<T> => {
+	public delete = async ( id: IdType ): Promise<T | null> => {
 		return this.findOne( { whereClause: 'where id=$1', queryValues: [ id ] } ).then( async item => {
-			const queryString = `delete from ${ this.resourceName } where id = $1`;
-			await DB.getInstance().query( queryString, [ id ] );
-			return item;
+			if ( item ) {
+				const queryString = `delete from ${ this.resourceName } where id = $1`;
+				await DB.getInstance().query( queryString, [ id ] );
+				return item as any as T;
+			} else return null;
 		} ).catch( error => {
 			console.error( 'DB ERROR - DELETE ERROR ID: ', this.resourceName, ' - ', id, ' ERROR: ', error );
 			throw error;

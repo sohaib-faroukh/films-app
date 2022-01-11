@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.flm_films
     description text COLLATE pg_catalog."default",
     release_date text COLLATE pg_catalog."default",
     rating integer DEFAULT 1,
-    ticket_price numeric,
+    ticket_price float8,
     country text COLLATE pg_catalog."default",
     photo text COLLATE pg_catalog."default",
     genre text[] COLLATE pg_catalog."default" NOT NULL DEFAULT ARRAY[]::text[],

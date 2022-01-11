@@ -1,5 +1,4 @@
-import * as  dotenv from 'dotenv';
-dotenv.config();
+import { DatabaseConfigs } from './env.reader';
 
 export const environment = {
 	production: true,
@@ -9,13 +8,7 @@ export const environment = {
 		path: 'films-app',
 		rootFile: 'index.html',
 	},
-	postgres: {
-		host: 'postgres-db',
-		port: 5432,
-		database: 'films-app-prod',
-		user: 'postgres',
-		password: 'postgres',
-	},
+	postgres: { ...DatabaseConfigs },
 	SeedDb: process.env.SEED_DB === 'true',
 	auth: {
 		secret: process.env.JWT_SECRET,

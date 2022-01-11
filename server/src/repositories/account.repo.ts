@@ -3,7 +3,7 @@ import { getToken } from '../utils/auth.util';
 import { verifyAuthToken } from '../utils/jwt.util';
 import { CrudBaseRepository } from './generics/crud-base.repo';
 
-class AccountRepo extends CrudBaseRepository<IAccountVM, string> {
+export class AccountRepo extends CrudBaseRepository<IAccountVM, string> {
 
 
 	public findByEmail = async ( email: string ): Promise<IAccount> => {

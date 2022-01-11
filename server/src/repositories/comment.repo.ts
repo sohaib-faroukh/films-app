@@ -4,7 +4,7 @@ import { AccountRepoFactory } from './account.repo';
 import { FilmRepoFactory } from './film.repo';
 import { CrudBaseRepository, QueryOptions } from './generics/crud-base.repo';
 
-class CommentRepo extends CrudBaseRepository<ICommentVM, string> {
+export class CommentRepo extends CrudBaseRepository<ICommentVM, string> {
 
 	public findFully = async ( options?: QueryOptions ): Promise<ICommentVM[]> => {
 		const normalizedOptions = this.normalizeQueryOptions( options );
