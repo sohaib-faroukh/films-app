@@ -14,7 +14,7 @@ this project aims to allow the visitors to be able to browse list movies, and mo
 ### Trying & Testing 
 
 #### try
-1. login to the application using the following credintials as an admin:
+1. login to the application using the following credentials as an admin:
    
    - email: `admin@email.com`, password: `admin`
 2. sign up & login by any credentials and try to show films list, film details, comment on film
@@ -25,7 +25,27 @@ this project aims to allow the visitors to be able to browse list movies, and mo
 ### Technical operations
 
 #### install the dependencies:
-Run `npm install` and please use a reliable VPN if you are in Syria
+Run `npm install` 
+
+#### migrate the DB DDL:
+make sure you set the right environment variables, local host database called `films-app-dev` sample:
+```
+PROD_PG_HOST='localhost'
+PROD_PG_PORT=5432
+PROD_PG_DATABASE='films-app-dev'
+PROD_PG_USERNAME='postgres'
+PROD_PG_PASSWORD='postgres'
+```
+##### dev environment
+Run `npm run migrate` 
+##### prod environment
+Run `npm run migrate:prod` 
+
+#### seed database:
+make sure you set the environment variables `SEED_DB` value as `'true'`, sample:
+```
+SEED_DB='false'
+```
 
 #### Run the app options:
 
